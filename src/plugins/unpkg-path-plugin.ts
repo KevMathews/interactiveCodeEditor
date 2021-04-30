@@ -6,20 +6,13 @@ const fileCache = localforage.createInstance({
 
 });
 
-(async () => {
-  await fileCache.setItem('color', 'red');
-  const color = await fileCache.getItem('color');
-  console.log(color);
-})();
-
-
 
 export const unpkgPathPlugin = () => {
   return {
     name: 'unpkg-path-plugin',
     setup(build: esbuild.PluginBuild) {
       build.onResolve({ filter: /.*/ }, async (args: any) => {
-        console.log('onResolve', args);
+
         if (args.path === 'index.js') {
           return { path: args.path, namespace: 'a' };
         }
@@ -37,7 +30,6 @@ export const unpkgPathPlugin = () => {
       });
 
       build.onLoad({ filter: /.*/ }, async (args: any) => {
-        console.log('onLoad', args);
 
         if (args.path === 'index.js') {
           return {
@@ -48,15 +40,31 @@ export const unpkgPathPlugin = () => {
             `,
           };
         }
+        //  Here I check to see if I have already fetched this file
+        //  and if it is in th cache
+        const cachedResult = await fileCache.getItem(args.path);
 
+        //  if it is, return it immediately
+        if (cachedResult) {
+          return cachedResult;
+        }
         const { data, request } = await axios.get(args.path);
-        console.log(request)
-        return {
+
+        const result = {
           loader: 'jsx',
           contents: data,
           resolveDir: new URL('./', request.responseURL).pathname
         };
+
+        //  store response in cache
+        await fileCache.setItem(args.path, result);
+
+        return result;
       });
     },
   };
 };
+
+
+
+
