@@ -1,5 +1,18 @@
 import * as esbuild from 'esbuild-wasm';
 import axios from 'axios';
+import localforage from 'localforage';
+
+const fileCache = localforage.createInstance({
+
+});
+
+(async () => {
+  await fileCache.setItem('color', 'red');
+  const color = await fileCache.getItem('color');
+  console.log(color);
+})();
+
+
 
 export const unpkgPathPlugin = () => {
   return {
@@ -17,18 +30,10 @@ export const unpkgPathPlugin = () => {
             path: new URL(args.path, 'https://unpkg.com' + args.resolveDir + '/').href,
           };
         }
-
         return {
           namespace: 'a',
           path: `https://unpkg.com/${args.path}`,
         };
-
-        // else if (args.path === 'tiny-test-pkg') {
-        //   return {
-        //     path: 'https://unpkg.com/tiny-test-pkg@1.0.0/index.js',
-        //     namespace: 'a',
-        //   };
-        // }
       });
 
       build.onLoad({ filter: /.*/ }, async (args: any) => {
