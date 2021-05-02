@@ -6,6 +6,7 @@ import { fetchPlugin } from './plugins/fetch-plugin';
 
 const App = () => {
   const ref = useRef<any>();
+  const iframe = useRef<any>();
   const [input, setInput] = useState('');
   const [code, setCode] = useState('');
 
@@ -38,13 +39,43 @@ const App = () => {
       },
     });
     // console.log(result);
-    setCode(result.outputFiles[0].text);
+
+    // setCode(result.outputFiles[0].text);
     // try {
     //   eval(result.outputFiles[0].text);
     // } catch (err) {
     //   console.error(err);
     // }
+
+    iframe.current.contentWindow.postMessage(result.outputFiles[0].text, '*');
   };
+
+  console.log(code);
+
+  const html =
+    `
+    <html>
+      <head>
+      </head>
+      <body>
+        <div id='root'>
+        </div>
+        <script>
+          window.addEventListener('message', (event) => {
+            console.log(event.data);
+          }, false);
+        </script>
+      </body>
+    </html>
+
+    `
+
+
+  // `
+  //   <script>
+  //     ${code}
+  //   </script>
+  // `
 
   return (
     <div>
@@ -57,9 +88,14 @@ const App = () => {
       </div>
       <pre>{code}</pre>
       {/* trying to figure out iframe */}
-      <iframe sandbox="allow-same-origin" src='/tester.html' />
+      {/* <iframe sandbox='' srcDoc={html} /> */}
+      <iframe ref={iframe} sandbox='allow-scripts' srcDoc={html} />
     </div>
   );
 };
+// const testHtml = `
+// <h1>Local HTML Test</h1>
+// `
+
 
 ReactDOM.render(<App />, document.querySelector('#root'));
