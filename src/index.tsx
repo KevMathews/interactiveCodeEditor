@@ -37,8 +37,13 @@ const App = () => {
         global: 'window',
       },
     });
-
+    // console.log(result);
     setCode(result.outputFiles[0].text);
+    // try {
+    //   eval(result.outputFiles[0].text);
+    // } catch (err) {
+    //   console.error(err);
+    // }
   };
 
   return (
@@ -51,6 +56,8 @@ const App = () => {
         <button onClick={onClick}>Submit</button>
       </div>
       <pre>{code}</pre>
+      {/* trying to figure out iframe */}
+      <iframe sandbox="allow-same-origin" src='/tester.html' />
     </div>
   );
 };
