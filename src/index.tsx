@@ -8,7 +8,7 @@ const App = () => {
   const ref = useRef<any>();
   const iframe = useRef<any>();
   const [input, setInput] = useState('');
-  const [code, setCode] = useState('');
+
 
   const startService = async () => {
     ref.current = await esbuild.startService({
@@ -24,6 +24,8 @@ const App = () => {
     if (!ref.current) {
       return;
     }
+
+    iframe.current.srcdoc = html;
 
     const result = await ref.current.build({
       entryPoints: ['index.js'],
@@ -50,25 +52,29 @@ const App = () => {
     iframe.current.contentWindow.postMessage(result.outputFiles[0].text, '*');
   };
 
-  console.log(code);
+  // console.log(code);
 
-  const html =
-    `
-    <html>
-      <head>
-      </head>
+  const html = `
+    
+  <html>
+      <head></head>
       <body>
-        <div id='root'>
-        </div>
+        <div id="root"></div>
         <script>
           window.addEventListener('message', (event) => {
-            console.log(event.data);
+            try {
+              eval(event.data);
+            } catch (err) {
+              const root = document.querySelector('#root');
+              root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + err + '</div>';
+              console.error(err);
+            }
           }, false);
         </script>
       </body>
     </html>
 
-    `
+  `;
 
 
   // `
@@ -86,10 +92,9 @@ const App = () => {
       <div>
         <button onClick={onClick}>Submit</button>
       </div>
-      <pre>{code}</pre>
       {/* trying to figure out iframe */}
       {/* <iframe sandbox='' srcDoc={html} /> */}
-      <iframe ref={iframe} sandbox='allow-scripts' srcDoc={html} />
+      <iframe title='code-preview' ref={iframe} sandbox='allow-scripts' srcDoc={html} />
     </div>
   );
 };
