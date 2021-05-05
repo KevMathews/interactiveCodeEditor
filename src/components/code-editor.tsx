@@ -15,7 +15,6 @@ interface CodeEditorProps {
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
   const editorRef = useRef<any>();
-
   const onEditorDidMount: EditorDidMount = (getValue, monacoEditor) => {
     editorRef.current = monacoEditor;
     monacoEditor.onDidChangeModelContent(() => {
@@ -38,7 +37,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
       () => { }
     );
   };
-
   // const onFormatClick = () => {
   // I need to get current val from editor
   // then i need to format that value
@@ -46,12 +44,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
   //  formatted value back in the editor 
   //  ***  I need to figure this out next  **
   // };
-
   const onFormatClick = () => {
     // console.log(editorRef.current);
     // get current value from editor
     const unformatted = editorRef.current.getModel().getValue();
-
     // format that value
     const formatted = prettier.format(unformatted, {
       parser: 'babel',
@@ -60,7 +56,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
       semi: true,
       singleQuote: true,
     }).replace(/\n$/, '');
-
     // set the formatted value back in the editor
     editorRef.current.setValue(formatted);
   };
@@ -89,5 +84,4 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
     </div>
   );
 };
-
 export default CodeEditor;

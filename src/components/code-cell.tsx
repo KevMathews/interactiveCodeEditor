@@ -27,7 +27,6 @@ const CodeCell = () => {
   //   setCode(output);
   // };
 
-
   return (
     <Resizable direction="vertical">
       <div style={{ height: '100%', display: 'flex', flexDirection: 'row' }}>
