@@ -13,15 +13,15 @@ const TextEditor: React.FC = () => {
         event.target &&
         ref.current.contains(event.target as Node)
       ) {
-        console.log('this click is inside editor');
+        console.log('click is inside editor');
         return;
       }
-      console.log('this click is not inside editor')
+      console.log('click is not inside editor')
       setEditing(false);
       // console.log(event.target)
     };
+    // document.addEventListener();
     document.addEventListener('click', listener, { capture: true });
-
     return () => {
       document.removeEventListener('click', listener, { capture: true });
     };
@@ -35,16 +35,13 @@ const TextEditor: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className="text-editor card" onClick={() => setEditing(true)}>
       <div className='card-content'>
-        {/* <MDEditor /> */}
         {/* <MDEditor.Markdown source={'# Header'} /> */}
         <MDEditor.Markdown source={value} />
       </div>
     </div>
   );
 };
-
 export default TextEditor;
