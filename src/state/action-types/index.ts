@@ -2,7 +2,5 @@ export enum ActionType {
   MOVE_CELL = 'move_cell',
   DELETE_CELL = 'delete_cell',
   INSERT_CELL_BEFORE = 'insert_cell_before',
-  // Not sure if i will allow inserting of a cell after or just before
-  //  INSERT_CELL_AFTER = 'insert_cell_after',
   UPDATE_CELL = 'update_cell',
 }
